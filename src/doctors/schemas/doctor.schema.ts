@@ -13,7 +13,7 @@ export class Doctor {
     required: true,
     type: MongooseSchema.Types.ObjectId,
   })
-  departmentId: MongooseSchema.Types.ObjectId;
+  departmentId: string;
 
   @Prop({ required: true })
   specialization: string;
