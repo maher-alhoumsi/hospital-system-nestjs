@@ -8,12 +8,14 @@ import {
 } from 'class-validator';
 import { AppointmentStatus } from '../enums/appointment-status.enum';
 
+import { Schema as MongooseSchema } from 'mongoose';
+
 export class CreateAppointmentDto {
   @IsMongoId()
-  patientId: string;
+  patientId: MongooseSchema.Types.ObjectId;
 
   @IsMongoId()
-  doctorId: string;
+  doctorId: MongooseSchema.Types.ObjectId;
 
   @IsDateString()
   scheduledAt: Date;

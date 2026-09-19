@@ -4,6 +4,7 @@ import {
   Post,
   Patch,
   Param,
+  Query,
   Delete,
   Controller,
 } from '@nestjs/common';
@@ -11,27 +12,56 @@ import {
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { CompleteAppointmentDto } from './dto/complete-appointment.dto';
 
-@Controller('appointments')
+@Controller()
 export class AppointmentsController {
   constructor(private readonly appointmentService: AppointmentsService) {}
 
-  @Post()
+  @Post('appointments')
   createAppointment(@Body() appointment: CreateAppointmentDto) {
     return this.appointmentService.createAppointment(appointment);
   }
 
-  @Get()
+  @Get('appointments')
   getAllAppointments() {
     return this.appointmentService.getAllAppointments();
   }
 
-  @Get(':id')
+  @Get('doctors/:id/appointments')
+  getDoctorAppointments(@Param('id') doctorId: string) {
+    return this.appointmentService.getAppointmentsByDoctorId(doctorId);
+  }
+
+  @Get('doctors/:id/schedule')
+  getDoctorSchedule(@Param('id') id: string, @Query('date') date: string) {
+    return this.appointmentService.getDoctorSchedule(id, date);
+  }
+
+  @Get('patients/:id/appointments')
+  getPatientAppointments(@Param('id') id: string) {
+    return this.appointmentService.getAppointmentsByPatientId(id);
+  }
+
+  @Get('patients/:id/medical-record')
+  getPatientMedicalRecord(@Param('id') id: string) {
+    return this.appointmentService.getPatientMedicalRecord(id);
+  }
+
+  @Patch('appointments/:id/complete')
+  completeAppointment(
+    @Param('id') id: string,
+    @Body() body: CompleteAppointmentDto,
+  ) {
+    return this.appointmentService.completeAppointment(id, body);
+  }
+
+  @Get('appointments/:id')
   getAppointmentById(@Param('id') id: string) {
     return this.appointmentService.getAppointmentById(id);
   }
 
-  @Patch(':id')
+  @Patch('appointments/:id')
   updateAppointment(
     @Param('id') id: string,
     @Body() updateData: UpdateAppointmentDto,
@@ -39,7 +69,7 @@ export class AppointmentsController {
     return this.appointmentService.updateAppointment(id, updateData);
   }
 
-  @Delete(':id')
+  @Delete('appointments/:id')
   deleteAppointment(@Param('id') id: string) {
     return this.appointmentService.deleteAppointment(id);
   }

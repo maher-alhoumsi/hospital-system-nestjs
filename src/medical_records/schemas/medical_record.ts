@@ -3,10 +3,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Doctor } from 'src/doctors/schemas/doctor.schema';
 import { Patient } from 'src/patients/schemas/patient.schema';
-import { AppointmentStatus } from '../enums/appointment-status.enum';
+import { Appointment } from 'src/appointments/schemas/appointment.schema';
 
 @Schema({ timestamps: true })
-export class Appointment {
+export class MedicalRecord {
   @Prop({
     required: true,
     ref: Patient.name,
@@ -21,17 +21,21 @@ export class Appointment {
   })
   doctorId: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true })
-  scheduledAt: Date;
-
-  @Prop({ default: AppointmentStatus.SCHEDULED, enum: AppointmentStatus })
-  status: AppointmentStatus;
-
-  @Prop({ required: true })
-  notes: string;
+  @Prop({
+    required: true,
+    ref: Appointment.name,
+    type: MongooseSchema.Types.ObjectId,
+  })
+  appointmentId: MongooseSchema.Types.ObjectId;
 
   @Prop({ required: true })
-  followUp: boolean;
+  patientIssue: string;
+
+  @Prop({ required: true })
+  doctorReport: string;
+
+  @Prop({ required: true })
+  medications: string[];
 }
 
-export const AppointmentSchema = SchemaFactory.createForClass(Appointment);
+export const MedicalRecordSchema = SchemaFactory.createForClass(MedicalRecord);

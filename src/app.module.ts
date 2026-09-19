@@ -9,6 +9,7 @@ import { PatientsModule } from './patients/patients.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { MedicalRecordsModule } from './medical_records/medical_records.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
     DoctorsModule,
     DepartmentsModule,
     AppointmentsModule,
+    MedicalRecordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

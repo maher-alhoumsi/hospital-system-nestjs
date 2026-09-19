@@ -11,5 +11,8 @@ import { Doctor, DoctorSchema } from './schemas/doctor.schema';
   ],
   controllers: [DoctorsController],
   providers: [DoctorsService],
+  exports: [
+    MongooseModule.forFeature([{ name: Doctor.name, schema: DoctorSchema }]),
+  ],
 })
 export class DoctorsModule {}
