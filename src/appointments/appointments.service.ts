@@ -304,4 +304,24 @@ export class AppointmentsService {
       },
     ]);
   }
+
+  async cancelAppointment(id: string) {
+    const appointment = await this.appointmentModel.findById(id);
+
+    if (!appointment) {
+      throw new NotFoundException(`Appointment with id ${id} not found`);
+    }
+
+    if (
+      appointment.status === AppointmentStatus.COMPLETED ||
+      appointment.status === AppointmentStatus.CANCELLED
+    ) {
+      throw new ConflictException(
+        `Appointment with id ${id} is already completed or cancelled`,
+      );
+    }
+
+    appointment.status = AppointmentStatus.CANCELLED;
+    return await appointment.save();
+  }
 }

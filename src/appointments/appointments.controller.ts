@@ -56,6 +56,11 @@ export class AppointmentsController {
     return this.appointmentService.completeAppointment(id, body);
   }
 
+  @Patch('appointments/:id/cancel')
+  cancelAppointment(@Param('id') id: string) {
+    return this.appointmentService.cancelAppointment(id);
+  }
+
   @Get('appointments/:id')
   getAppointmentById(@Param('id') id: string) {
     return this.appointmentService.getAppointmentById(id);
