@@ -48,6 +48,11 @@ export class AppointmentsController {
     return this.appointmentService.getPatientMedicalRecord(id);
   }
 
+  @Get('appointments/report')
+  getAppointmentsReport() {
+    return this.appointmentService.getAppointmentsReport();
+  }
+
   @Patch('appointments/:id/complete')
   completeAppointment(
     @Param('id') id: string,

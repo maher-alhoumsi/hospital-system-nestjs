@@ -324,4 +324,49 @@ export class AppointmentsService {
     appointment.status = AppointmentStatus.CANCELLED;
     return await appointment.save();
   }
+
+  async getAppointmentsReport() {
+    const [totalAppointments, appointmentsByStatus, topDoctors] =
+      await Promise.all([
+        this.appointmentModel.countDocuments(),
+
+        this.appointmentModel.aggregate<{
+          count: number;
+          _id: AppointmentStatus;
+        }>([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
+
+        this.appointmentModel.aggregate([
+          {
+            $lookup: {
+              from: 'doctors',
+              localField: 'doctorId',
+              foreignField: '_id',
+              as: 'doctor',
+            },
+          },
+          { $unwind: '$doctor' },
+          {
+            $group: {
+              _id: '$doctorId',
+              totalAppointments: { $sum: 1 },
+              name: { $first: '$doctor.name' },
+            },
+          },
+          { $sort: { totalAppointments: -1 } },
+          { $limit: 3 },
+          { $project: { _id: 0, name: 1, totalAppointments: 1 } },
+        ]),
+      ]);
+
+    const byStatus = appointmentsByStatus.reduce((acc, curr) => {
+      acc[curr._id] = curr.count;
+      return acc;
+    }, {});
+
+    return {
+      byStatus,
+      topDoctors,
+      totalAppointments,
+    };
+  }
 }
