@@ -31,6 +31,11 @@ export class DepartmentsController {
     return this.departmentsService.getDepartmentById(id);
   }
 
+  @Get(':id/stats')
+  getDepartmentStats(@Param('id') id: string) {
+    return this.departmentsService.getDepartmentStats(id);
+  }
+
   @Patch(':id')
   updateDepartment(@Param('id') id: string, @Body() body: UpdateDepartmentDTO) {
     return this.departmentsService.updateDepartment(id, body);

@@ -19,6 +19,11 @@ import { MedicalRecordsModule } from 'src/medical_records/medical_records.module
   ],
   controllers: [AppointmentsController],
   providers: [AppointmentsService],
+  exports: [
+    MongooseModule.forFeature([
+      { name: Appointment.name, schema: AppointmentSchema },
+    ]),
+  ],
 })
 export class AppointmentsModule {}
 
