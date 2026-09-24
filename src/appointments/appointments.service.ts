@@ -1,5 +1,6 @@
 import {
   Injectable,
+  OnModuleInit,
   NotFoundException,
   ConflictException,
   BadRequestException,
@@ -17,7 +18,7 @@ import { CompleteAppointmentDto } from './dto/complete-appointment.dto';
 import { MedicalRecord } from 'src/medical_records/schemas/medical_record';
 
 @Injectable()
-export class AppointmentsService {
+export class AppointmentsService implements OnModuleInit {
   constructor(
     @InjectModel(Appointment.name)
     private readonly appointmentModel: Model<Appointment>,
@@ -27,6 +28,24 @@ export class AppointmentsService {
     @InjectModel(MedicalRecord.name)
     private readonly medicalRecordModel: Model<MedicalRecord>,
   ) {}
+
+  onModuleInit() {
+    const changeStream = this.appointmentModel.watch<
+      Appointment,
+      mongoose.mongo.ChangeStreamDocument<Appointment>
+    >([{ $match: { operationType: 'update' } }]);
+
+    changeStream.on('change', (change) => {
+      if (change.operationType !== 'update') return;
+
+      const docId = change.documentKey._id;
+      const operationType = change.operationType;
+      const updatedFields = change.updateDescription.updatedFields;
+
+      console.log(`Operation Type is : ${operationType}`);
+      console.log(`Appointment ${docId.toString()} updated:`, updatedFields);
+    });
+  }
 
   async createAppointment(appointmentData: CreateAppointmentDto) {
     const existingDoctor = await this.doctorModel.findById(
@@ -71,7 +90,7 @@ export class AppointmentsService {
   }
 
   async getAllAppointments() {
-    return this.appointmentModel.find();
+    return this.appointmentModel.find().lean();
   }
 
   async getAppointmentById(id: string) {
