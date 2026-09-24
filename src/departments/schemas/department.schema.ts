@@ -13,3 +13,4 @@ export class Department {
 }
 
 export const DepartmentSchema = SchemaFactory.createForClass(Department);
+DepartmentSchema.index({ name: 'text' });

@@ -22,3 +22,4 @@ export class Doctor {
 }
 
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);
+DoctorSchema.index({ name: 'text', specialization: 'text' });

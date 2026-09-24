@@ -16,3 +16,4 @@ export class Patient {
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);
+PatientSchema.index({ name: 'text' });

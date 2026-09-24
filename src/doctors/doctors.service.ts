@@ -1,6 +1,10 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { Doctor } from './schemas/doctor.schema';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
@@ -53,5 +57,18 @@ export class DoctorsService {
     }
 
     return doctor;
+  }
+
+  async searchDoctors(query: string) {
+    if (!query || query.trim() === '') {
+      throw new BadRequestException(`Search query cannot be empty`);
+    }
+
+    return this.doctorModel.aggregate([
+      { $match: { $text: { $search: query } } },
+      { $addFields: { score: { $meta: 'textScore' } } },
+      { $sort: { score: -1 } },
+      { $project: { name: 1, specialization: 1, score: 1 } },
+    ]);
   }
 }

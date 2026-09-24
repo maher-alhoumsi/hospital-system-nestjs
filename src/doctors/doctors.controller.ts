@@ -6,6 +6,7 @@ import {
   Patch,
   Delete,
   Controller,
+  Query,
 } from '@nestjs/common';
 
 import { DoctorsService } from './doctors.service';
@@ -24,6 +25,11 @@ export class DoctorsController {
   @Get()
   getDoctors() {
     return this.doctorsService.getDoctors();
+  }
+
+  @Get('search')
+  searchDoctors(@Query('q') query: string) {
+    return this.doctorsService.searchDoctors(query);
   }
 
   @Get(':id')
